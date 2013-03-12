@@ -63,7 +63,7 @@ typedef enum
 @property (nonatomic, assign) int componentIndex;
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, copy) NSString *tagLabel;
-@property (nonatomic) NSMutableDictionary *attributes;
+@property (nonatomic, assign) NSMutableDictionary *attributes;
 @property (nonatomic, assign) int position;
 
 - (id)initWithString:(NSString*)aText tag:(NSString*)aTagLabel attributes:(NSMutableDictionary*)theAttributes;
@@ -74,20 +74,20 @@ typedef enum
 @end
 
 @interface RTLabelExtractedComponent : NSObject
-@property (nonatomic, strong) NSMutableArray *textComponents;
+@property (nonatomic, retain) NSMutableArray *textComponents;
 @property (nonatomic, copy) NSString *plainText;
 + (RTLabelExtractedComponent*)rtLabelExtractComponentsWithTextComponent:(NSMutableArray*)textComponents plainText:(NSString*)plainText;
 @end
 
 @interface RTLabel : UIView
 @property (nonatomic, copy) NSString *text, *plainText, *highlightedText;
-@property (nonatomic, strong) UIColor *textColor;
-@property (nonatomic, strong) UIFont *font;
-@property (nonatomic, strong) NSDictionary *linkAttributes;
-@property (nonatomic, strong) NSDictionary *selectedLinkAttributes;
-@property (nonatomic, unsafe_unretained) id<RTLabelDelegate> delegate;
+@property (nonatomic, retain) UIColor *textColor;
+@property (nonatomic, retain) UIFont *font;
+@property (nonatomic, retain) NSDictionary *linkAttributes;
+@property (nonatomic, retain) NSDictionary *selectedLinkAttributes;
+@property (nonatomic, assign) id<RTLabelDelegate> delegate;
 @property (nonatomic, copy) NSString *paragraphReplacement;
-@property (nonatomic, strong) NSMutableArray *textComponents, *highlightedTextComponents;
+@property (nonatomic, retain) NSMutableArray *textComponents, *highlightedTextComponents;
 @property (nonatomic, assign) RTTextAlignment textAlignment;
 @property (nonatomic, assign) CGSize optimumSize;
 @property (nonatomic, assign) RTTextLineBreakMode lineBreakMode;

@@ -39,7 +39,7 @@
 
 @interface RTLabelButton : UIButton
 @property (nonatomic, assign) int componentIndex;
-@property (nonatomic) NSURL *url;
+@property (nonatomic, assign) NSURL *url;
 @end
 
 @implementation RTLabelButton
@@ -60,7 +60,7 @@
 
 + (id)componentWithString:(NSString*)aText tag:(NSString*)aTagLabel attributes:(NSMutableDictionary*)theAttributes
 {
-	return [[self alloc] initWithString:aText tag:aTagLabel attributes:theAttributes];
+	return [[[self alloc] initWithString:aText tag:aTagLabel attributes:theAttributes] autorelease];
 }
 
 - (id)initWithTag:(NSString*)aTagLabel position:(int)aPosition attributes:(NSMutableDictionary*)theAttributes 
@@ -76,7 +76,7 @@
 
 +(id)componentWithTag:(NSString*)aTagLabel position:(int)aPosition attributes:(NSMutableDictionary*)theAttributes
 {
-	return [[self alloc] initWithTag:aTagLabel position:aPosition attributes:theAttributes];
+	return [[[self alloc] initWithTag:aTagLabel position:aPosition attributes:theAttributes] autorelease];
 }
 
 - (NSString*)description
@@ -94,17 +94,27 @@
 
 @implementation RTLabelExtractedComponent
 
+/////////////////////////////////////////////////////////////////////////////////////////////
 + (RTLabelExtractedComponent*)rtLabelExtractComponentsWithTextComponent:(NSMutableArray*)textComponents plainText:(NSString*)plainText
 {
-    RTLabelExtractedComponent *component = [[RTLabelExtractedComponent alloc] init];
-    [component setTextComponents:textComponents];
-    [component setPlainText:plainText];
+    RTLabelExtractedComponent *component = [[[RTLabelExtractedComponent alloc] init] autorelease];
+    component.textComponents = textComponents;
+    component.plainText = plainText;
     return component;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+- (void)dealloc {
+ 
+    self.textComponents = nil;
+    self.plainText = nil;
+    [super dealloc];
 }
 
 @end
 
 @interface RTLabel()
+
 - (CGFloat)frameHeight:(CTFrameRef)frame;
 - (NSArray *)components;
 - (void)parse:(NSString *)data valid_tags:(NSArray *)valid_tags;
@@ -127,24 +137,43 @@
 
 @implementation RTLabel
 
+/////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithFrame:(CGRect)_frame {
     
     self = [super initWithFrame:_frame];
     if (self) {
 
 		[self setBackgroundColor:[UIColor clearColor]];
-		_font = [UIFont systemFontOfSize:15];
-		_textColor = [UIColor blackColor];
-		_text = @"";
+        self.font = [UIFont systemFontOfSize:15];
+		self.textColor = [UIColor blackColor];
+		self.text = @"";
 		_textAlignment = RTTextAlignmentLeft;
-		_lineBreakMode = RTTextLineBreakModeWordWrapping;
-		_lineSpacing = 3;
-		_currentSelectedButtonComponentIndex = -1;
-        _paragraphReplacement = @"\n";
+		self.lineBreakMode = RTTextLineBreakModeWordWrapping;
+		self.lineSpacing = 3;
+		self.currentSelectedButtonComponentIndex = -1;
+        self.paragraphReplacement = @"\n";
 		
 		[self setMultipleTouchEnabled:YES];
     }
     return self;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+- (void)dealloc {
+
+    self.text = nil;
+    self.plainText = nil;
+    self.highlighted = nil;
+    self.textColor = nil;
+    self.font = nil;
+    self.linkAttributes = nil;
+    self.paragraphReplacement = nil;
+    self.textComponents = nil;
+    self.highlightedTextComponents = nil;
+    
+    self.delegate = nil;
+
+    [super dealloc];
 }
 
 - (void)setTextAlignment:(RTTextAlignment)textAlignment
@@ -189,7 +218,7 @@
     }
 	
 	// Initialize an attributed string.
-	CFStringRef string = (__bridge CFStringRef)self.plainText;
+	CFStringRef string = (CFStringRef)self.plainText;
 	CFMutableAttributedStringRef attrString = CFAttributedStringCreateMutable(kCFAllocatorDefault, 0);
 	CFAttributedStringReplaceString (attrString, CFRangeMake(0, 0), string);
 	
@@ -204,8 +233,7 @@
 	
 	[self applyParagraphStyleToText:attrString attributes:nil atPosition:0 withLength:CFAttributedStringGetLength(attrString)];
 	
-	
-	CTFontRef thisFont = CTFontCreateWithName ((__bridge CFStringRef)[self.font fontName], [self.font pointSize], NULL); 
+	CTFontRef thisFont = CTFontCreateWithName((CFStringRef)[self.font fontName], [self.font pointSize], NULL); 
 	CFAttributedStringSetAttribute(attrString, CFRangeMake(0, CFAttributedStringGetLength(attrString)), kCTFontAttributeName, thisFont);
 	
 	NSMutableArray *links = [NSMutableArray array];
@@ -343,7 +371,7 @@
 					
 					CGFloat button_width = primaryOffset2 - primaryOffset;
 					
-					RTLabelButton *button = [[RTLabelButton alloc] initWithFrame:CGRectMake(primaryOffset+origin.x, height, button_width, ascent+descent)];
+					RTLabelButton *button = [[[RTLabelButton alloc] initWithFrame:CGRectMake(primaryOffset+origin.x, height, button_width, ascent+descent)] autorelease];
 					
 					[button setBackgroundColor:[UIColor colorWithWhite:0 alpha:0]];
 					[button setComponentIndex:linkableComponents.componentIndex];
@@ -524,12 +552,12 @@
 
 - (void)applySingleUnderlineText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length
 {
-	CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTUnderlineStyleAttributeName,  (__bridge CFNumberRef)[NSNumber numberWithInt:kCTUnderlineStyleSingle]);
+	CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTUnderlineStyleAttributeName,  (CFNumberRef)[NSNumber numberWithInt:kCTUnderlineStyleSingle]);
 }
 
 - (void)applyDoubleUnderlineText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length
 {
-	CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTUnderlineStyleAttributeName,  (__bridge CFNumberRef)[NSNumber numberWithInt:kCTUnderlineStyleDouble]);
+	CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTUnderlineStyleAttributeName,  (CFNumberRef)[NSNumber numberWithInt:kCTUnderlineStyleDouble]);
 }
 
 - (void)applyItalicStyleToText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length
@@ -539,7 +567,7 @@
     if (!italicFontRef) {
         //fallback to system italic font
         UIFont *font = [UIFont italicSystemFontOfSize:CTFontGetSize(actualFontRef)];
-        italicFontRef = CTFontCreateWithName ((__bridge CFStringRef)[font fontName], [font pointSize], NULL);
+        italicFontRef = CTFontCreateWithName ((CFStringRef)[font fontName], [font pointSize], NULL);
     }
     CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTFontAttributeName, italicFontRef);
     CFRelease(italicFontRef);
@@ -558,11 +586,11 @@
 		}
 		else if ([key caseInsensitiveCompare:@"stroke"] == NSOrderedSame)
 		{
-			CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTStrokeWidthAttributeName, (__bridge CFTypeRef)([NSNumber numberWithFloat:[[attributes objectForKey:@"stroke"] intValue]]));
+			CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTStrokeWidthAttributeName, (CFTypeRef)([NSNumber numberWithFloat:[[attributes objectForKey:@"stroke"] intValue]]));
 		}
 		else if ([key caseInsensitiveCompare:@"kern"] == NSOrderedSame)
 		{
-			CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTKernAttributeName, (__bridge CFTypeRef)([NSNumber numberWithFloat:[[attributes objectForKey:@"kern"] intValue]]));
+			CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTKernAttributeName, (CFTypeRef)([NSNumber numberWithFloat:[[attributes objectForKey:@"kern"] intValue]]));
 		}
 		else if ([key caseInsensitiveCompare:@"underline"] == NSOrderedSame)
 		{
@@ -608,7 +636,7 @@
 	}
 	if (font)
 	{
-		CTFontRef customFont = CTFontCreateWithName ((__bridge CFStringRef)[font fontName], [font pointSize], NULL); 
+		CTFontRef customFont = CTFontCreateWithName ((CFStringRef)[font fontName], [font pointSize], NULL); 
 		CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTFontAttributeName, customFont);
 		CFRelease(customFont);
 	}
@@ -621,7 +649,7 @@
     if (!boldFontRef) {
         //fallback to system bold font
         UIFont *font = [UIFont boldSystemFontOfSize:CTFontGetSize(actualFontRef)];
-        boldFontRef = CTFontCreateWithName ((__bridge CFStringRef)[font fontName], [font pointSize], NULL);
+        boldFontRef = CTFontCreateWithName ((CFStringRef)[font fontName], [font pointSize], NULL);
     }
     CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTFontAttributeName, boldFontRef);
     CFRelease(boldFontRef);
@@ -634,7 +662,7 @@
     if (!boldItalicFontRef) {
         //try fallback to system boldItalic font
         NSString *fontName = [NSString stringWithFormat:@"%@-BoldOblique", self.font.fontName];
-        boldItalicFontRef = CTFontCreateWithName ((__bridge CFStringRef)fontName, [self.font pointSize], NULL);
+        boldItalicFontRef = CTFontCreateWithName ((CFStringRef)fontName, [self.font pointSize], NULL);
     }
     
     if (boldItalicFontRef) {
@@ -755,7 +783,10 @@
 
 - (void)setText:(NSString *)text
 {
-	_text = [text stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
+    [_text release];
+	_text = [[text stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"] retain];
+    
+    //-- SDS: RTLabel is allocated, not retained, its member assigned
 	RTLabelExtractedComponent *component = [RTLabel extractTextStyleFromText:_text paragraphReplacement:self.paragraphReplacement];
     [self setTextComponents:component.textComponents];
     [self setPlainText:component.plainText];
@@ -764,7 +795,7 @@
 
 - (void)setText:(NSString *)text extractedTextComponent:(RTLabelExtractedComponent*)extractedComponent
 {
-	_text = [text stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
+	self.text = [text stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
     [self setTextComponents:extractedComponent.textComponents];
     [self setPlainText:extractedComponent.plainText];
 	[self setNeedsDisplay];
@@ -772,7 +803,7 @@
 
 - (void)setHighlightedText:(NSString *)text extractedTextComponent:(RTLabelExtractedComponent*)extractedComponent
 {
-    _highlightedText = [text stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
+    self.highlightedText = [text stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
     [self setHighlightedTextComponents:extractedComponent.textComponents];
 }
 
@@ -789,11 +820,6 @@
         height += (ascent + fabsf(descent) + leading);
     }
     return ceilf(height);
-}
-
-- (void)dealloc 
-{
-    self.delegate = nil;
 }
 
 - (NSArray *)components
@@ -837,7 +863,7 @@
 			}
 		}
 	}
-	return [components copy];
+	return [[components copy] autorelease];
 }
 
 + (RTLabelExtractedComponent*)extractTextStyleFromText:(NSString*)data paragraphReplacement:(NSString*)paragraphReplacement
@@ -1014,7 +1040,7 @@
 {
 	hexColor = [[hexColor stringByTrimmingCharactersInSet:
 				 [NSCharacterSet whitespaceAndNewlineCharacterSet]
-				 ] uppercaseString];  
+				 ] uppercaseString];
 	
     NSRange range;  
     range.location = 0;  
@@ -1050,7 +1076,7 @@
 
 - (void)setText:(NSString *)text extractedTextStyle:(NSDictionary*)extractTextStyle
 {
-	_text = [text stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
+	self.text = [text stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
     [self setTextComponents:[extractTextStyle objectForKey:@"textComponents"]];
     [self setPlainText:[extractTextStyle objectForKey:@"plainText"]];
 	[self setNeedsDisplay];
