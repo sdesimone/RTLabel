@@ -40,7 +40,7 @@
     UIWindow *window;
 }
 
-@property (nonatomic) IBOutlet UIWindow *window;
+@property (nonatomic, assign) IBOutlet UIWindow *window;
 
 @end
 

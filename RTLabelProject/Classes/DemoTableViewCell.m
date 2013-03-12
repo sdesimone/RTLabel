@@ -17,13 +17,18 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code.
-		_rtLabel = [DemoTableViewCell textLabel];
+		self.rtLabel = [DemoTableViewCell textLabel];
 		[self.contentView addSubview:_rtLabel];
 		[_rtLabel setBackgroundColor:[UIColor clearColor]];
         
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     return self;
+}
+
+- (void)dealloc {
+    self.rtLabel = nil;
+    [super dealloc];
 }
 
 - (void)layoutSubviews
@@ -38,7 +43,7 @@
 
 + (RTLabel*)textLabel
 {
-	RTLabel *label = [[RTLabel alloc] initWithFrame:CGRectMake(10,10,300,100)];
+	RTLabel *label = [[[RTLabel alloc] initWithFrame:CGRectMake(10,10,300,100)] autorelease];
 	//[label setFont:[UIFont fontWithName:@"HelveticaNeue-CondensedBold" size:20]];
     [label setParagraphReplacement:@""];
 	return label;

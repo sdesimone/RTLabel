@@ -10,6 +10,6 @@
 #import "RTLabel.h"
 
 @interface DemoTableViewCell : UITableViewCell
-@property (nonatomic, strong) RTLabel *rtLabel;
+@property (nonatomic, retain) RTLabel *rtLabel;
 + (RTLabel*)textLabel;
 @end

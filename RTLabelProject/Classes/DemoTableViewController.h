@@ -39,5 +39,5 @@
 #import "RTLabel.h"
 
 @interface DemoTableViewController : UITableViewController <RTLabelDelegate>
-@property (nonatomic, strong) NSMutableArray *dataArray;
+@property (nonatomic, retain) NSMutableArray *dataArray;
 @end

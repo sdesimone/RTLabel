@@ -38,6 +38,9 @@
 #import <UIKit/UIKit.h>
 #import <CoreText/CoreText.h>
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 typedef enum
 {
 	RTTextAlignmentRight = kCTRightTextAlignment,
@@ -53,17 +56,23 @@ typedef enum
 	RTTextLineBreakModeClip = kCTLineBreakByClipping,
 }RTTextLineBreakMode;
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 @protocol RTLabelDelegate <NSObject>
 
 @optional
 - (void)rtLabel:(id)rtLabel didSelectLinkWithURL:(NSURL*)url;
 @end
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 @interface RTLabelComponent : NSObject
 @property (nonatomic, assign) int componentIndex;
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, copy) NSString *tagLabel;
-@property (nonatomic, assign) NSMutableDictionary *attributes;
+@property (nonatomic, retain) NSMutableDictionary *attributes;
 @property (nonatomic, assign) int position;
 
 - (id)initWithString:(NSString*)aText tag:(NSString*)aTagLabel attributes:(NSMutableDictionary*)theAttributes;
@@ -73,12 +82,20 @@ typedef enum
 
 @end
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 @interface RTLabelExtractedComponent : NSObject
 @property (nonatomic, retain) NSMutableArray *textComponents;
 @property (nonatomic, copy) NSString *plainText;
-+ (RTLabelExtractedComponent*)rtLabelExtractComponentsWithTextComponent:(NSMutableArray*)textComponents plainText:(NSString*)plainText;
+
++ (RTLabelExtractedComponent*)rtLabelExtractComponentsWithTextComponent:(NSMutableArray*)textComponents
+                                                              plainText:(NSString*)plainText;
 @end
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 @interface RTLabel : UIView
 @property (nonatomic, copy) NSString *text, *plainText, *highlightedText;
 @property (nonatomic, retain) UIColor *textColor;
@@ -87,7 +104,7 @@ typedef enum
 @property (nonatomic, retain) NSDictionary *selectedLinkAttributes;
 @property (nonatomic, assign) id<RTLabelDelegate> delegate;
 @property (nonatomic, copy) NSString *paragraphReplacement;
-@property (nonatomic, retain) NSMutableArray *textComponents, *highlightedTextComponents;
+@property (nonatomic, copy) NSMutableArray *textComponents, *highlightedTextComponents;
 @property (nonatomic, assign) RTTextAlignment textAlignment;
 @property (nonatomic, assign) CGSize optimumSize;
 @property (nonatomic, assign) RTTextLineBreakMode lineBreakMode;

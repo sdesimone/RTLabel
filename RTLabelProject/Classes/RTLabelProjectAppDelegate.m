@@ -49,8 +49,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
 
     [self.window makeKeyAndVisible];
-	DemoTableViewController *demoTableViewController = [[DemoTableViewController alloc] initWithStyle:UITableViewStylePlain];
-	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:demoTableViewController];
+	DemoTableViewController *demoTableViewController = [[[DemoTableViewController alloc] initWithStyle:UITableViewStylePlain] autorelease];
+	UINavigationController *navController = [[[UINavigationController alloc] initWithRootViewController:demoTableViewController] autorelease];
 	[window setRootViewController:navController];
 	
     

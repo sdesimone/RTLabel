@@ -51,7 +51,7 @@
     self = [super initWithStyle:style];
     if (self) {
         
-		UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0,150,30)];
+		UILabel *titleLabel = [[[UILabel alloc] initWithFrame:CGRectMake(0,0,150,30)] autorelease];
 		[titleLabel setBackgroundColor:[UIColor clearColor]];
 		[titleLabel setTextColor:[UIColor whiteColor]];
 		[titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-CondensedBold" size:20]];
@@ -59,7 +59,7 @@
 		[self.navigationItem setTitleView:titleLabel];
 		[titleLabel setTextAlignment:UITextAlignmentCenter];
 		
-		_dataArray = [NSMutableArray array];
+		self.dataArray = [NSMutableArray array];
 		NSMutableDictionary *row1 = [NSMutableDictionary dictionary];
 		[row1 setObject:@"<b>bold</b> and <i>italic</i> style" forKey:@"text"];
 		[self.dataArray addObject:row1];
@@ -93,6 +93,12 @@
 		[self.dataArray addObject:row20];
     }
     return self;
+}
+
+- (void)dealloc {
+    
+    self.dataArray = nil;
+    [super dealloc];
 }
 
 #pragma mark -
@@ -138,7 +144,7 @@
     DemoTableViewCell *cell = (DemoTableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) 
 	{
-        cell = [[DemoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[[DemoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
         [cell.rtLabel setDelegate:self];
     }
 	[cell.rtLabel setText:[[self.dataArray objectAtIndex:indexPath.row] objectForKey:@"text"]];
