@@ -16,7 +16,7 @@
 		F801A574136D868000BA1B35 /* DemoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F801A573136D868000BA1B35 /* DemoTableViewController.m */; };
 		F801A58E136D879B00BA1B35 /* DemoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F801A58D136D879B00BA1B35 /* DemoTableViewCell.m */; };
 		F8ABFD7612D5B7EE00A7CE33 /* HelveticaNeue.dfont in Resources */ = {isa = PBXBuildFile; fileRef = F8ABFD7512D5B7EE00A7CE33 /* HelveticaNeue.dfont */; };
-		F8BDA6A112D553C900B6CC65 /* RTLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BDA6A012D553C900B6CC65 /* RTLabel.m */; };
+		F8BDA6A112D553C900B6CC65 /* RTLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BDA6A012D553C900B6CC65 /* RTLabel.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F8BDA6AD12D554AE00B6CC65 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8BDA6AC12D554AE00B6CC65 /* CoreText.framework */; };
 /* End PBXBuildFile section */
 
